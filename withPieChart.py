@@ -1,12 +1,13 @@
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
 from matplotlib import style
 import json
 import csv
 
 url = 'http://api.openweathermap.org/data/2.5/forecast?id=112931&appid=19f42fb5690d136f4a1ada64d849337e&units=metric'
-
 response = requests.get(url)
 json_data = response.json()
 
@@ -34,14 +35,24 @@ for item in json_data['list']:
 csv_obj.close()
 
 df = pd.read_csv('weather_forecast.csv')
+df['Date & Time'] = pd.to_datetime(df['Date & Time'])
 
-my_xaxis = list()
-my_xaxis = df.loc[:, 'Date & Time']
+# Plotting
+fig, ax = plt.subplots()
+fig.subplots_adjust(right=0.75)
 
-df.plot(x='Date & Time', y='Temperature', kind='line', fontsize = 7)
-plt.title('Visualization of Two Columns')
-plt.xlabel('Date & Time', fontsize=10)
-plt.ylabel('Temperature')
-plt.legend(['Temperature'])
+# Plotting data
+p1, = ax.plot(df['Date & Time'], df['Feels Like'], "C0", label="Feels Like")
+p2, = ax.plot(df['Date & Time'], df['Min Temp'], "C1", label="Min Temp")
+p3, = ax.plot(df['Date & Time'], df['Max Temp'], "C2", label="Max Temp")
+
+# Adjusting tick frequency on the X-axis
+ax.xaxis.set_major_locator(plt.MaxNLocator(12))
+
+# Formatting plot
+ax.set(xlabel="Date & Time", ylabel="Temperature")
+
+# Adding legend
+ax.legend(handles=[p1, p2, p3], loc='upper left')
 
 plt.show()
