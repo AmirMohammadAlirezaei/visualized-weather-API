@@ -11,6 +11,7 @@ url = 'http://api.openweathermap.org/data/2.5/forecast?id=112931&appid=19f42fb56
 response = requests.get(url)
 json_data = response.json()
 
+#city name
 city_name = json_data['city']['name']
 
 csv_file = 'weather_forecast.csv'
